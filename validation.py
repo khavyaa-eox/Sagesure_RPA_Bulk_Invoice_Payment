@@ -23,7 +23,7 @@ S3_INVALID_FOLDER = config.s3_invalid_folder
 STANDARD_HEADERS = ['Payee/Vendor', 'Client Claim Number', 'Invoice Number', 'Assignment Type', 'Adjuster Cost Category', 'Grand Total']
 
 # Initialize the S3 client
-s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
+s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
 
 
 def validate_file(file_key):
