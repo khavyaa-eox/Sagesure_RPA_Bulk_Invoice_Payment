@@ -1,0 +1,23 @@
+2024-11-14 23:33:41,955 - __main__ - INFO - Acquired credentials: svc_claims_rpa+vendorbulkpay3@icg360.com
+2024-11-14 23:33:41,955 - __main__ - INFO - Downloading rpa-vendor-bulk-pay/worker_1/test.xlsx
+2024-11-14 23:33:43,079 - __main__ - INFO - Processing file: rpa-vendor-bulk-pay/worker_1/test.xlsx
+2024-11-14 23:33:46,168 - Bulk_Invoice_Payment - INFO - Browser instance started
+2024-11-14 23:34:12,190 - Bulk_Invoice_Payment - INFO - HO-0008295
+2024-11-14 23:35:30,014 - Bulk_Invoice_Payment - INFO - task numbers: 12
+2024-11-14 23:35:30,014 - Bulk_Invoice_Payment - INFO - Closing 1 of 12 tasks -->Open
+2024-11-14 23:35:30,026 - Bulk_Invoice_Payment - INFO - Closing 2 of 12 tasks -->Open
+2024-11-14 23:35:30,037 - Bulk_Invoice_Payment - INFO - Closing 3 of 12 tasks -->Open
+2024-11-14 23:35:30,048 - Bulk_Invoice_Payment - INFO - Closing 4 of 12 tasks -->Open
+2024-11-14 23:35:30,059 - Bulk_Invoice_Payment - INFO - Closing 5 of 12 tasks -->Open
+2024-11-14 23:35:30,070 - Bulk_Invoice_Payment - INFO - Closing 6 of 12 tasks -->Open
+2024-11-14 23:35:30,081 - Bulk_Invoice_Payment - INFO - Closing 7 of 12 tasks -->Open
+2024-11-14 23:35:30,093 - Bulk_Invoice_Payment - INFO - Closing 8 of 12 tasks -->Open
+2024-11-14 23:35:30,107 - Bulk_Invoice_Payment - INFO - Closing 9 of 12 tasks -->Open
+2024-11-14 23:35:30,119 - Bulk_Invoice_Payment - INFO - Closing 10 of 12 tasks -->Open
+2024-11-14 23:35:30,130 - Bulk_Invoice_Payment - INFO - Closing 11 of 12 tasks -->Open
+2024-11-14 23:35:30,142 - Bulk_Invoice_Payment - INFO - Closing 12 of 12 tasks -->Open
+2024-11-14 23:35:30,168 - Bulk_Invoice_Payment - INFO - Total Time: 107.07030296325684
+2024-11-14 23:36:16,144 - Bulk_Invoice_Payment - INFO - Failed records saved to /home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/Error_Files/test_20241114_233530_completed.xlsx
+2024-11-14 23:36:16,206 - Bulk_Invoice_Payment - INFO - Total Time: 153.1079821586609
+2024-11-14 23:36:16,206 - Bulk_Invoice_Payment - INFO - Completed filename: test_20241114_233530_completed.xlsx
+2024-11-14 23:36:17,471 - __main__ - INFO - Completed processing: rpa-vendor-bulk-pay/worker_1/test.xlsx
