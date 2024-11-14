@@ -5,6 +5,7 @@ import logging
 import tempfile
 import threading
 from datetime import datetime
+from dotenv import load_dotenv
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 import signal
@@ -32,11 +33,13 @@ logger = logging.getLogger(__name__)
 temp_dir = tempfile.gettempdir()
 os.makedirs(temp_dir, exist_ok=True) # Ensure the temp_dir exists
 
+# Load environment variables from .env file
+load_dotenv()
 
 # S3 and RDC Connection and Folder details
-BUCKET_NAME = config.bucket
-ACCESS_KEY_ID = config.access_key_id
-SECRET_ACCESS_KEY = config.secret_access_key
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+ACCESS_KEY_ID = os.getenv("ACCESS_KEY_ID")
+SECRET_ACCESS_KEY = os.getenv("SECRET_ACCESS_KEY")
 
 S3_UPLOADS_FOLDER = config.s3_uploads_folder
 S3_PROCESSING_FOLDER = config.s3_processing_folder

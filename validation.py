@@ -1,15 +1,19 @@
 import os
 import pandas as pd
+from dotenv import load_dotenv
 from io import BytesIO
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 import config
 # from send_email import send_text_email_invalid
 
-# AWS credentials and folders
-BUCKET_NAME = config.bucket
-ACCESS_KEY = config.access_key_id
-SECRET_KEY = config.secret_access_key
+# Load environment variables from .env file
+load_dotenv()
+
+# S3 and RDC Connection and Folder details
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+ACCESS_KEY_ID = os.getenv("ACCESS_KEY_ID")
+SECRET_ACCESS_KEY = os.getenv("SECRET_ACCESS_KEY")
 
 S3_UPLOADS_FOLDER = config.s3_uploads_folder
 S3_INVALID_FOLDER = config.s3_invalid_folder
