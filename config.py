@@ -39,11 +39,11 @@ s3_error_folder = 'rpa-vendor-bulk-pay/worker_1/error_files'
 s3_invalid_folder = 'rpa-vendor-bulk-pay/worker_1/invalid_submissions'
 
 # LOCAL_PATHS
-local_download_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/attachments/Input_Files'
-local_error_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/Error_Files'
-local_completed_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/Output Files'
+local_download_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/attachments/input_files'
+local_error_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/error_files'
+local_completed_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/output_files'
 
 # RDC_PATHS
-download_path = '/attachments/Input_Files'
-completed_path = '/Output Files'
-error_path = '/Error_Files'
+download_path = '/attachments/input_files'
+completed_path = '/output_files'
+error_path = '/error_files'
