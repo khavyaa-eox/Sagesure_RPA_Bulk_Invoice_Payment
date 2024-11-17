@@ -45,6 +45,13 @@ def call_process(file_path,credential):
         filename = os.path.basename(file_path)
         filename1 = filename
         filename1_flag = 0
+        completed_filename = ""
+        
+        def generate_completed_filename(filename):
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            name, ext = os.path.splitext(filename)
+            completed_filename = f"{name}_{timestamp}_completed{ext}"
+            return completed_filename
         
         def click_using_text(textValue):
             # Replace 'Click me' with the text of the element you want to click
@@ -113,9 +120,9 @@ def call_process(file_path,credential):
         
         options = Options()
         options.add_experimental_option("excludeSwitches" , ["enable-automation"])
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
-        chrome_path = r"chromedriver.exe" #path from 'which chromedriver'#path from 'which chromedriver'
+        chrome_path = r"chromedriver.exe" #path from 'which chromedriver'
         # chrome_path = ChromeDriverManager().install()
         driver = webdriver.Chrome(options=options)
         driver.maximize_window()
@@ -590,11 +597,9 @@ def call_process(file_path,credential):
                     
                     data.loc[i, 'EOX Comments'] = 'Processed'
 
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    name, ext = os.path.splitext(filename)
-                    completed_filename = f"{name}_{timestamp}_completed{ext}"
+                    completed_filename = generate_completed_filename(filename)
                     # filename1 = str(filename).replace('.xlsx','')
-                    data.to_excel(config.local_completed_path+"/"+str(completed_filename),index=False)
+                    data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
                     filename1_flag = 1
                     endTime = time.time()
                     logger.info(f"Total Time: {endTime-startTime}")
@@ -610,12 +615,14 @@ def call_process(file_path,credential):
                 try:
                     addComment = ''
                     # filename1 = str(filename).replace('.xlsx','')
-                    data.to_excel(config.local_completed_path+"/"+str(completed_filename),index=False)
+                    if not completed_filename:
+                        completed_filename = generate_completed_filename(filename)
+                    data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
                     
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                     filenamedate = datetime.now().strftime('%m_%d_%Y')
-                    directory = config.local_error_path+'/'+filenamedate
+                    directory = config.error_path+'/'+filenamedate
                     webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
                     time.sleep(3)
                     if "Your password has expired. Please reset your password." in webpageText:
@@ -634,7 +641,7 @@ def call_process(file_path,credential):
                     if 'We didn\'t find any results for the search' in webpageText:
                         data.loc[i, 'EOX Comments'] = 'We did not find any results for this Claim Number'
                         
-                        driver.save_screenshot(config.local_error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                        driver.save_screenshot(config.error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
                         
                     else:
                         addCommentPageNotFound = ''
@@ -642,14 +649,15 @@ def call_process(file_path,credential):
                             addCommentPageNotFound = 'Page Not Found - '
                         if checkPointPayment == 1:
                             data.loc[i, 'EOX Comments'] = addCommentPageNotFound + addComment + 'Resend this record.\n' + str((exc_tb.tb_lineno,exc_type,exc_obj))
-                            driver.save_screenshot(config.local_error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                            driver.save_screenshot(config.error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
                             
                         elif checkPointPayment == 0:
                             data.loc[i, 'EOX Comments'] = addCommentPageNotFound + addComment +'Completed the payment with an issue while closing tasks. Please check manually.'+ str((exc_tb.tb_lineno,exc_type,exc_obj))
-                            driver.save_screenshot(config.local_error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                            driver.save_screenshot(config.error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                            
                     
                     # filename1 = str(filename).replace('.xlsx','')
-                    data.to_excel(config.local_completed_path+"/"+str(completed_filename),index=False)
+                    data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
                            
                     try:
                         
@@ -760,7 +768,8 @@ def call_process(file_path,credential):
                 vendorCheckFlag = ''
 
                 # filename1 = str(filename).replace('.xlsx','')
-                data.to_excel(config.local_completed_path+"/"+str(completed_filename),index=False)
+                
+                data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
                 
             g = i
             #print(g+1)
@@ -783,23 +792,24 @@ def call_process(file_path,credential):
                 wait_for_ele_presence(claimSearchButton,100)
         
         # filename1 = str(filename).replace('.xlsx','')
-        data.to_excel(config.local_completed_path+"/"+str(completed_filename),index=False) 
+        
+        data.to_excel(config.completed_path+"/"+str(completed_filename),index=False) 
 
         # =============================================================================
         # ************** Get the Failed records in separate Excel File ***************
         # =============================================================================
         # Reload the full file to get the error records if any
         try:
-            error_data = pd.read_excel(config.local_completed_path + "/" + str(completed_filename))
+            error_data = pd.read_excel(config.completed_path + "/" + str(completed_filename))
 
             # Filter records where "EOX Comments" is not "Processed"
             failed_records = error_data[error_data['EOX Comments'] != 'Processed']
 
             if not failed_records.empty:
                 # Save the entire rows (with all columns) of failed records to the error file
-                failed_records.to_excel(config.local_error_path + "/" + str(completed_filename), index=False)
-                logger.info(f"Failed records saved to {config.local_error_path + '/' + str(completed_filename)}")
-                # send_email_with_attachment_error(config.local_completed_path + "/" + str(completed_filename))
+                failed_records.to_excel(config.error_path + "/" + str(completed_filename), index=False)
+                logger.info(f"Failed records saved to {config.error_path + '/' + str(completed_filename)}")
+                # send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
             else:
                 logger.info(f"No failed records found.")
 
@@ -807,7 +817,7 @@ def call_process(file_path,credential):
             logger.error(f"Error reading or processing the file: {str(e)}")
 
         driver.quit()
-        # send_email_with_attachment(config.local_completed_path + "/" + str(completed_filename))
+        # send_email_with_attachment(config.completed_path + "/" + str(completed_filename))
         
         endTime = time.time()
         logger.info(f"Total Time: {endTime-startTime}")
@@ -818,12 +828,11 @@ def call_process(file_path,credential):
 # =============================================================================
     except:
         if filename1_flag:
-            # send_email_with_attachment_error(config.local_completed_path + "/" + str(completed_filename))
+            # send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
             return completed_filename
         elif filename1_flag == 0:
             # send_text_email_error("Sagesure | RPA | Chrome Crash", filename)
             return filename
 # =============================================================================
     
-
-call_process('/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/attachments/Input_Files/test.xlsx',{'user': 'svc_claims_rpa+vendorbulkpay3@icg360.com', 'password': '_3$FD^%UPwJs`53"$xsX'})
+# call_process('/home/rpa-user/Sagesure_RPA_Bulk_Invoice_Payment/attachments/input_files/test.xlsx', {'user':'svc_claims_rpa+vendorbulkpay5@icg360.com', 'password':'1io$AU/XMz7NdV?5&kUN'})

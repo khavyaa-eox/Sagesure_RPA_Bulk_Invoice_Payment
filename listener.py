@@ -50,12 +50,12 @@ S3_INVALID_FOLDER = config.s3_invalid_folder
 MAX_FILES_IN_PROCESSING = 2  # Max simultaneous files to process
 file_queue = []  # Array to store valid files to be processed
 credentials_lock = threading.Lock()  # Lock to handle credential access
-USERS = config.credentials['worker_1'] # Users credentials for Snapsheet
+USERS = config.credentials['worker_2'] # Users credentials for Snapsheet
 used_credentials = []  # List to track used credentials
 
-LOCAL_DOWNLOADS = config.local_download_path
-LOCAL_PROCESSED = config.local_completed_path
-LOCAL_ERROR = config.local_error_path
+LOCAL_DOWNLOADS = config.download_path
+LOCAL_PROCESSED = config.completed_path
+LOCAL_ERROR = config.error_path
 
 '''
 RDC_DOWNLOADS = config.download_path
@@ -155,10 +155,17 @@ def process_file_with_credential(file_key):
         # name, ext = os.path.splitext(filename)
         # completed_filename = f"{name}_{timestamp}_completed{ext}"
         processed_key = os.path.join(S3_PROCESSED_FOLDER, completed_filename)
+        print(f"Completed file: {completed_filename}")
 
         # Upload the completed file to the processed folder in S3
-        s3.upload_file(Filename=config.local_completed_path + "/" + str(completed_filename), Bucket=BUCKET_NAME, Key=processed_key)        
+        s3.upload_file(Filename=LOCAL_PROCESSED + "/" + str(completed_filename), Bucket=BUCKET_NAME, Key=processed_key)        
         s3.delete_object(Bucket=BUCKET_NAME, Key=processing_key)
+        
+        # Check if there were any error records file generated - move to error files
+        if os.path.exists(os.path.join(LOCAL_ERROR, completed_filename)):
+            error_key = os.path.join(S3_ERROR_FOLDER, completed_filename)
+            s3.upload_file(Filename=os.path.join(LOCAL_ERROR, completed_filename), Bucket=BUCKET_NAME, Key=error_key)
+            logger.info(f"Error records stored in {error_key}")
 
         # Log completion and remove local file
         logger.info(f"Completed processing: {file_key}")
@@ -200,8 +207,8 @@ def main():
     signal.signal(signal.SIGINT, handle_exit)  # To Handle Ctrl+C
     while True:
         monitor_files()
-        print("\nSleeping for 5 minutes before checking again...")
-        time.sleep(300)  # Check S3 every 5 minutes
+        print("\nSleeping for 2 minutes before checking again...")
+        time.sleep(120)  # Check S3 every 2 minutes
 
 if __name__ == '__main__':
     main()

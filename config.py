@@ -1,5 +1,5 @@
 # Chromedriver path
-chrome_driver = "/home/eox_kavya/Sagesure/Sagesure_Celery/chromedriver-linux64/chromedriver"
+chrome_driver = ""
 
 # Snapsheet URLS
 url = 'https://snapsheetvice.com/'
@@ -32,11 +32,11 @@ credentials = {
 # rpa-vendor-bulk-pay-worker-3 10.6.112.150
 
 # S3 PATHS
-s3_uploads_folder = 'rpa-vendor-bulk-pay/worker_1'
-s3_processing_folder = 'rpa-vendor-bulk-pay/worker_1/processing_submissions'
-s3_processed_folder = 'rpa-vendor-bulk-pay/worker_1/processed_submissions'
-s3_error_folder = 'rpa-vendor-bulk-pay/worker_1/error_files'
-s3_invalid_folder = 'rpa-vendor-bulk-pay/worker_1/invalid_submissions'
+s3_uploads_folder = 'rpa-vendor-bulk-pay/worker_2'
+s3_processing_folder = 'rpa-vendor-bulk-pay/worker_2/processing_submissions'
+s3_processed_folder = 'rpa-vendor-bulk-pay/worker_2/processed_submissions'
+s3_error_folder = 'rpa-vendor-bulk-pay/worker_2/error_files'
+s3_invalid_folder = 'rpa-vendor-bulk-pay/worker_2/invalid_submissions'
 
 # LOCAL_PATHS
 local_download_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/attachments/input_files'
@@ -44,6 +44,8 @@ local_error_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/error_file
 local_completed_path = '/home/eox_kavya/Sagesure_RPA_Bulk_Invoice_Payment/output_files'
 
 # RDC_PATHS
-download_path = '/attachments/input_files'
-completed_path = '/output_files'
-error_path = '/error_files'
+download_path = '/home/rpa-user/Sagesure_RPA_Bulk_Invoice_Payment/attachments/input_files'
+completed_path = '/home/rpa-user/Sagesure_RPA_Bulk_Invoice_Payment/output_files'
+error_path = '/home/rpa-user/Sagesure_RPA_Bulk_Invoice_Payment/error_files'
+
+
