@@ -413,7 +413,7 @@ def call_process(file_path,credential):
                         'Adjusting',Keys.ENTER,Keys.TAB,
                         str(addReserveCategory),Keys.ENTER,Keys.TAB,
                         str(addReserverNewValue),Keys.ENTER,Keys.TAB,
-                        Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.ENTER)
+                        Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.ENTER)
                     #print('Added')
                     webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
                     countwebpageText3 = 0
