@@ -5,7 +5,7 @@ from io import BytesIO
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 import config
-# from send_email import send_text_email_invalid
+from send_email import send_text_email_invalid
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,7 +51,7 @@ def validate_file(file_key):
                 print("No sheet contains any of the required headers. File will not be processed.")
                 is_valid = False
                 move_file_to_invalid(file_key)
-                # send_text_email_invalid("Sagesure | RPA | Invalid File", f"No sheet contains any of the required headers. File {os.path.basename(file_key)} will not be processed.")
+                send_text_email_invalid("Sagesure | RPA | Invalid File", f"No sheet contains any of the required headers. File {os.path.basename(file_key)} will not be processed.")
                 return is_valid
             else:
                 print(f"Validating the sheet: {valid_sheet}")
@@ -67,7 +67,7 @@ def validate_file(file_key):
             print(f"Missing headers: {missing_headers}")
             is_valid = False
             move_file_to_invalid(file_key)
-            # send_text_email_invalid("Sagesure | RPA | Invalid File", f"Missing headers: {missing_headers}.\nFile {os.path.basename(file_key)} will not be processed.")
+            send_text_email_invalid("Sagesure | RPA | Invalid File", f"Missing headers: {missing_headers}.\nFile {os.path.basename(file_key)} will not be processed.")
             return is_valid
 
         print("Validation passed: The file has all required headers and is a valid .xlsx file.\n")
@@ -77,17 +77,17 @@ def validate_file(file_key):
         print(e)
         is_valid = False
         move_file_to_invalid(file_key)
-        # send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
+        send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
     except NoCredentialsError:
         print("Credentials not available.")
         is_valid = False
         move_file_to_invalid(file_key)
-        # send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
+        send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
     except ClientError as e:
         print(f"An error occurred: {e}")
         is_valid = False
         move_file_to_invalid(file_key)
-        # send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
+        send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
 
 
     return is_valid  # Return False if any validation fails

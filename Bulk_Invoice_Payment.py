@@ -809,7 +809,7 @@ def call_process(file_path,credential):
                 # Save the entire rows (with all columns) of failed records to the error file
                 failed_records.to_excel(config.error_path + "/" + str(completed_filename), index=False)
                 logger.info(f"Failed records saved to {config.error_path + '/' + str(completed_filename)}")
-                # send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
+                send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
             else:
                 logger.info(f"No failed records found.")
 
@@ -817,7 +817,7 @@ def call_process(file_path,credential):
             logger.error(f"Error reading or processing the file: {str(e)}")
 
         driver.quit()
-        # send_email_with_attachment(config.completed_path + "/" + str(completed_filename))
+        send_email_with_attachment(config.completed_path + "/" + str(completed_filename))
         
         endTime = time.time()
         logger.info(f"Total Time: {endTime-startTime}")
@@ -828,10 +828,10 @@ def call_process(file_path,credential):
 # =============================================================================
     except:
         if filename1_flag:
-            # send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
+            send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
             return completed_filename
         elif filename1_flag == 0:
-            # send_text_email_error("Sagesure | RPA | Chrome Crash", filename)
+            send_text_email_error("Sagesure | RPA | Chrome Crash", filename)
             return filename
 # =============================================================================
     
