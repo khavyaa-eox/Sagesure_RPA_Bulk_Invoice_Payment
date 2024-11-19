@@ -12,9 +12,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-import pandas as  pd
+import pandas as pd
 from datetime import datetime
-import logging
 import time
 import config
 import os
@@ -27,31 +26,23 @@ from send_email import send_email_with_attachment
 from send_email import send_email_with_attachment_error
 from send_email import send_text_email
 from send_email import send_text_email_error
+from logger import bulk_invoice_logger, log_separator
 
-# Set up logging with date and time format
-logging.basicConfig(
-    level=logging.INFO,
-    filename='app.log',
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+LOCAL_DOWNLOADS = config.local_download_path
+LOCAL_PROCESSED = config.local_completed_path
+LOCAL_ERROR = config.local_error_path
 
 
 # Main file processing function
-def call_process(file_path,credential):
+def call_process(file_path, credential, dated_filename):
+    bulk_invoice_logger.info("Starting a new run...")
+    log_separator(bulk_invoice_logger)
     try:
         usr = credential['user']
         pwd = credential['password']
         filename = os.path.basename(file_path)
         filename1 = filename
-        filename1_flag = 0
-        completed_filename = ""
-        
-        def generate_completed_filename(filename):
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            name, ext = os.path.splitext(filename)
-            completed_filename = f"{name}_{timestamp}_completed{ext}"
-            return completed_filename
+        filename1_flag = 0        
         
         def click_using_text(textValue):
             # Replace 'Click me' with the text of the element you want to click
@@ -128,13 +119,13 @@ def call_process(file_path,credential):
         driver.maximize_window()
 
         try:
-            driver.get(config.test_url)
-            logger.info(f'Browser instance started')
+            driver.get(config.url)
+            bulk_invoice_logger.info(f'Browser instance started')
             
         except:
             time.sleep(60)
-            logger.error("Issue While Opening the Browser")
-            driver.get(config.test_url)
+            bulk_invoice_logger.error("Issue While Opening the Browser")
+            driver.get(config.url)
 
         driver.implicitly_wait(15)
         
@@ -175,7 +166,7 @@ def call_process(file_path,credential):
                         claimNumWeb = driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div/div[3]/ul/div/div[3]/div/div[2]/div['+str(clLen+1)+']/div[1]/div[2]/a/span').text
                     
                     if claimNumWeb == clnumberfromexcel:
-                        logger.info(claimNumWeb)
+                        bulk_invoice_logger.info(claimNumWeb)
                         claimStatus = driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div/div[3]/ul/div/div[3]/div/div[2]/div['+str(clLen+1)+']/div[2]/div[2]/div').text
                         time.sleep(1)
                         driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div/div[3]/ul/div/div[3]/div/div[2]/div['+str(clLen+1)+']/div[1]/div[2]/a/span').click()
@@ -545,15 +536,15 @@ def call_process(file_path,credential):
                             checkReviewText = driver.find_element(by=By.XPATH,value='/html/body').text
                             checkReviewTextCounter += 1
                             if checkReviewTextCounter == 29:
-                                logger.info(f"{checkReviewTextCounter}, Max wait exceeding while waiting for Review Claim Task")
+                                bulk_invoice_logger.info(f"{checkReviewTextCounter}, Max wait exceeding while waiting for Review Claim Task")
                     taskListCountText = driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/div[1]/div[1]').text  
                     taskListCount = int(taskListCountText.replace('CURRENT(','').replace(')',''))
                     
                     t = 1
                     tCounter = 1
-                    logger.info(f'task numbers: {taskListCount}')
+                    bulk_invoice_logger.info(f"task numbers: {taskListCount}")
                     while t <= taskListCount:
-                        logger.info(f"Closing "+str(t)+" of "+str(taskListCount)+" tasks -->"+claimStatus)
+                        bulk_invoice_logger.info(f"Closing {t} of {taskListCount} tasks --> {claimStatus}")
                         if claimStatus == 'Closed':
                             # time.sleep(2)
                             checkReviewText = driver.find_element(by=By.XPATH,value='/html/body').text
@@ -562,9 +553,9 @@ def call_process(file_path,credential):
                                 time.sleep(1)
                                 checkReviewText = driver.find_element(by=By.XPATH,value='/html/body').text
                                 checkReviewTextCounter += 1
-                                logger.info(checkReviewTextCounter)
+                                bulk_invoice_logger.info(checkReviewTextCounter)
                                 if "Review Claim for Closure" in checkReviewText:
-                                    logger.info(f'YESS')
+                                    bulk_invoice_logger.info(f"YESS")
                             taskName = driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/div[1]/div[2]/div['+str(t)+']/div/div[1]/div').text
                             # print(claimStatus,'---->',taskName)
                             
@@ -575,7 +566,7 @@ def call_process(file_path,credential):
                                 driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/div/div[6]/button[2]').click()
                                 driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/button').click()
                                 driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[1]/div/div[2]/div/button[2]').click()
-                                logger.info(f'closed the task','---->',taskName)              
+                                bulk_invoice_logger.info(f"Closed the task --> {taskName}")              
                                 t -= 1
                                 taskListCount-=1
                         elif claimStatus == 'Open':
@@ -597,12 +588,11 @@ def call_process(file_path,credential):
                     
                     data.loc[i, 'EOX Comments'] = 'Processed'
 
-                    completed_filename = generate_completed_filename(filename)
                     # filename1 = str(filename).replace('.xlsx','')
-                    data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
+                    data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False)
                     filename1_flag = 1
                     endTime = time.time()
-                    logger.info(f"Total Time: {endTime-startTime}")
+                    bulk_invoice_logger.info(f"Total Time: {endTime-startTime}")
                     
                 elif claimStatus.upper() == 'CANCELLED':
                     data.loc[i, 'EOX Comments'] = 'Claim State is CANCELLED'
@@ -615,19 +605,17 @@ def call_process(file_path,credential):
                 try:
                     addComment = ''
                     # filename1 = str(filename).replace('.xlsx','')
-                    if not completed_filename:
-                        completed_filename = generate_completed_filename(filename)
-                    data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
+                    data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False)
                     
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                     filenamedate = datetime.now().strftime('%m_%d_%Y')
-                    directory = config.error_path+'/'+filenamedate
+                    directory = LOCAL_ERROR+'/'+filenamedate
                     webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
                     time.sleep(3)
                     if "Your password has expired. Please reset your password." in webpageText:
                         send_text_email("Sagesure | RPA | Password Expired | "+str(usr))
-                        logger.info(f"Password expired mail sent")
+                        bulk_invoice_logger.info(f"Password expired mail sent")
                     
                     try:
                         if vendorCheckFlag == 0:
@@ -641,7 +629,7 @@ def call_process(file_path,credential):
                     if 'We didn\'t find any results for the search' in webpageText:
                         data.loc[i, 'EOX Comments'] = 'We did not find any results for this Claim Number'
                         
-                        driver.save_screenshot(config.error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                        driver.save_screenshot(LOCAL_ERROR+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
                         
                     else:
                         addCommentPageNotFound = ''
@@ -649,15 +637,15 @@ def call_process(file_path,credential):
                             addCommentPageNotFound = 'Page Not Found - '
                         if checkPointPayment == 1:
                             data.loc[i, 'EOX Comments'] = addCommentPageNotFound + addComment + 'Resend this record.\n' + str((exc_tb.tb_lineno,exc_type,exc_obj))
-                            driver.save_screenshot(config.error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                            driver.save_screenshot(LOCAL_ERROR+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
                             
                         elif checkPointPayment == 0:
                             data.loc[i, 'EOX Comments'] = addCommentPageNotFound + addComment +'Completed the payment with an issue while closing tasks. Please check manually.'+ str((exc_tb.tb_lineno,exc_type,exc_obj))
-                            driver.save_screenshot(config.error_path+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
+                            driver.save_screenshot(LOCAL_ERROR+'/'+str(filenamedate)+'/'+str(i)+'_'+str(clnumberfromexcel)+'_'+str(invoiceNumber)+'.png')
                             
                     
                     # filename1 = str(filename).replace('.xlsx','')
-                    data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
+                    data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False)
                            
                     try:
                         
@@ -690,9 +678,9 @@ def call_process(file_path,credential):
                                     time.sleep(1)
                                     checkReviewText = driver.find_element(by=By.XPATH,value='/html/body').text
                                     checkReviewTextCounter += 1
-                                    logger.info(checkReviewTextCounter)
+                                    bulk_invoice_logger.info(checkReviewTextCounter)
                                     if "Review Claim for Closure" in checkReviewText:
-                                        logger.info(f'YESS')
+                                        bulk_invoice_logger.info(f"YESS")
                             taskListCountText = driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/div[1]/div[1]').text  
                             taskListCount = int(taskListCountText.replace('CURRENT(','').replace(')',''))
                             # check_for_webpage_text('Review Claim for Closure',20)
@@ -703,7 +691,7 @@ def call_process(file_path,credential):
                                 if claimStatus == 'Closed':
                                     
                                     taskName = driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/div[1]/div[2]/div['+str(t)+']/div/div[1]/div').text
-                                    logger.info(f"{claimStatus}---->{taskName}")
+                                    bulk_invoice_logger.info(f"{claimStatus}---->{taskName}")
                                     if taskName == 'Reopen associated exposure(s) for further handling' or taskName == 'Review Claim for Closure':
                                         # time.sleep(3)
                                         driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div/div[3]/div[5]/div/div[2]/div[2]/div/div[1]/div[2]/div['+str(t)+']/div/div[1]/div[2]/button').click()
@@ -711,7 +699,7 @@ def call_process(file_path,credential):
                                         driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/div/div[6]/button[2]').click()
                                         driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[2]/div/button').click()
                                         driver.find_element(by=By.XPATH,value='//*[@id="scaffold-wrapper"]/div/div[3]/div[5]/div/div[2]/div[1]/div/div[2]/div/button[2]').click()
-                                        logger.info(f"closed the task----->{taskName}")
+                                        bulk_invoice_logger.info(f"closed the task----->{taskName}")
                                         t -= 1
                                         taskListCount-=1
                                 elif claimStatus == 'Open':
@@ -742,7 +730,7 @@ def call_process(file_path,credential):
                     
                     driver = webdriver.Chrome(options=options)
                     driver.maximize_window()
-                    driver.get(config.test_url)
+                    driver.get(config.url)
                     driver.implicitly_wait(15)
                     
                     wait_for_ele_presence('//*[@id="app"]/div/form[2]/label/input')
@@ -753,7 +741,7 @@ def call_process(file_path,credential):
                     webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
                     if "Your password has expired. Please reset your password." in webpageText:
                         send_text_email("Sagesure | RPA | Password Expired | "+str(usr))
-                        logger.info(f"Password expired mail sent")
+                        bulk_invoice_logger.info(f"Password expired mail sent")
                             
                     claimSearchButton = '//*[@id="header"]/div/div[1]/div[1]/div'
                     wait_for_ele_presence(claimSearchButton,100)
@@ -769,7 +757,7 @@ def call_process(file_path,credential):
 
                 # filename1 = str(filename).replace('.xlsx','')
                 
-                data.to_excel(config.completed_path+"/"+str(completed_filename),index=False)
+                data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False)
                 
             g = i
             #print(g+1)
@@ -781,7 +769,7 @@ def call_process(file_path,credential):
                 driver.quit()
                 driver = webdriver.Chrome(options=options)
                 driver.maximize_window()
-                driver.get(config.test_url)
+                driver.get(config.url)
                 driver.implicitly_wait(15)
                 
                 wait_for_ele_presence('//*[@id="app"]/div/form[2]/label/input')
@@ -793,45 +781,51 @@ def call_process(file_path,credential):
         
         # filename1 = str(filename).replace('.xlsx','')
         
-        data.to_excel(config.completed_path+"/"+str(completed_filename),index=False) 
+        data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False) 
 
         # =============================================================================
         # ************** Get the Failed records in separate Excel File ***************
         # =============================================================================
         # Reload the full file to get the error records if any
         try:
-            error_data = pd.read_excel(config.completed_path + "/" + str(completed_filename))
+            error_data = pd.read_excel(LOCAL_PROCESSED + "/" + str(dated_filename))
 
             # Filter records where "EOX Comments" is not "Processed"
             failed_records = error_data[error_data['EOX Comments'] != 'Processed']
 
             if not failed_records.empty:
                 # Save the entire rows (with all columns) of failed records to the error file
-                failed_records.to_excel(config.error_path + "/" + str(completed_filename), index=False)
-                logger.info(f"Failed records saved to {config.error_path + '/' + str(completed_filename)}")
-                send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
+                failed_records.to_excel(LOCAL_ERROR + "/" + str(dated_filename), index=False)
+                bulk_invoice_logger.info(f"Failed records saved to {LOCAL_ERROR + '/' + str(dated_filename)}")
+                send_email_with_attachment_error(LOCAL_PROCESSED + "/" + str(dated_filename))
             else:
-                logger.info(f"No failed records found.")
+                bulk_invoice_logger.info(f"No failed records found.")
 
         except Exception as e:
-            logger.error(f"Error reading or processing the file: {str(e)}")
+            bulk_invoice_logger.error(f"Error reading or processing the file: {str(e)}")
 
         driver.quit()
-        send_email_with_attachment(config.completed_path + "/" + str(completed_filename))
+        send_email_with_attachment(LOCAL_PROCESSED + "/" + str(dated_filename))
         
         endTime = time.time()
-        logger.info(f"Total Time: {endTime-startTime}")
+        bulk_invoice_logger.info(f"Total Time: {endTime-startTime}")
 
-        logger.info(f"Completed filename: {completed_filename}")
-        return completed_filename
+        bulk_invoice_logger.info(f"Completed filename: {dated_filename}")
+        bulk_invoice_logger.info("Run completed.")
+        log_separator(bulk_invoice_logger)
+        return dated_filename
 
 # =============================================================================
     except:
         if filename1_flag:
-            send_email_with_attachment_error(config.completed_path + "/" + str(completed_filename))
-            return completed_filename
+            send_email_with_attachment_error(LOCAL_PROCESSED + "/" + str(dated_filename))
+            bulk_invoice_logger.info("Run completed.")
+            log_separator(bulk_invoice_logger)
+            return dated_filename
         elif filename1_flag == 0:
             send_text_email_error("Sagesure | RPA | Chrome Crash", filename)
+            bulk_invoice_logger.info("Run completed.")
+            log_separator(bulk_invoice_logger)
             return filename
 # =============================================================================
     

@@ -6,6 +6,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 import config
 from send_email import send_text_email_invalid
+from logger import listener_logger
 
 # Load environment variables from .env file
 load_dotenv()
@@ -48,43 +49,43 @@ def validate_file(file_key):
                     valid_sheet = sheet
                     break
             if not valid_sheet:
-                print("No sheet contains any of the required headers. File will not be processed.")
+                listener_logger.info("No sheet contains any of the required headers. File will not be processed.")
                 is_valid = False
                 move_file_to_invalid(file_key)
                 send_text_email_invalid("Sagesure | RPA | Invalid File", f"No sheet contains any of the required headers. File {os.path.basename(file_key)} will not be processed.")
                 return is_valid
             else:
-                print(f"Validating the sheet: {valid_sheet}")
+                listener_logger.info(f"Validating the sheet: {valid_sheet}")
                 data = pd.read_excel(file_obj, sheet_name=valid_sheet)
         else:
             # Single sheet case
-            print(f"Single sheet detected: {excel_file.sheet_names[0]}")
+            listener_logger.info(f"Single sheet detected: {excel_file.sheet_names[0]}")
             data = pd.read_excel(file_obj)
 
         # Check for missing headers
         missing_headers = set(STANDARD_HEADERS) - set(data.columns)
         if missing_headers:
-            print(f"Missing headers: {missing_headers}")
+            listener_logger.error(f"Missing headers: {missing_headers}")
             is_valid = False
             move_file_to_invalid(file_key)
             send_text_email_invalid("Sagesure | RPA | Invalid File", f"Missing headers: {missing_headers}.\nFile {os.path.basename(file_key)} will not be processed.")
             return is_valid
 
-        print("Validation passed: The file has all required headers and is a valid .xlsx file.\n")
+        listener_logger.info("Validation passed: The file has all required headers and is a valid .xlsx file.")
         return is_valid  # Return True if all validations pass
 
     except (FileNotFoundError, ValueError) as e:
-        print(e)
+        listener_logger.error(e)
         is_valid = False
         move_file_to_invalid(file_key)
         send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
     except NoCredentialsError:
-        print("Credentials not available.")
+        listener_logger.error("Credentials not available.")
         is_valid = False
         move_file_to_invalid(file_key)
         send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
     except ClientError as e:
-        print(f"An error occurred: {e}")
+        listener_logger.error(f"An error occurred: {e}")
         is_valid = False
         move_file_to_invalid(file_key)
         send_text_email_invalid("Sagesure | RPA | Invalid File", f"Error occurred while validating file: {e} \nFile {os.path.basename(file_key)} will not be processed.")
@@ -98,6 +99,6 @@ def move_file_to_invalid(file_key):
     try:
         s3.copy_object(Bucket=BUCKET_NAME, CopySource=copy_source, Key=destination_key)
         s3.delete_object(Bucket=BUCKET_NAME, Key=file_key)
-        print(f"Moved {file_key} to {S3_INVALID_FOLDER} due to invalid format.")
+        listener_logger.info(f"Moved {file_key} to {S3_INVALID_FOLDER} due to invalid format.")
     except ClientError as e:
-        print(f"Failed to move file {file_key} to error folder: {e}")
+        listener_logger.error(f"Failed to move file {file_key} to error folder: {e}")

@@ -4,8 +4,8 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import os
 from email.utils import COMMASPACE
+from logger import listener_logger
 
 
 def send_email_with_attachment_error(aname):
@@ -103,7 +103,7 @@ def send_email_with_attachment(aname):
         server.sendmail(sender_email, receiver_email, text)
 
 def send_error_email():
-    print('sending error email')
+    listener_logger.info('sending error email')
     subject = "Sagesure | Bulk Invoice Payment error email"
     body = "No Emails to process OR \nError while downloadning the excel. Please check for attachment in email sent for processing.\n\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
