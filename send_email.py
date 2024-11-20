@@ -12,7 +12,7 @@ def send_email_with_attachment_error(aname):
     subject = "Sagesure | Partial | Bulk Invoice Payment completion email"
     body = "The process had stopped due to chrome crash or unkonwn issue. Please check on priority.\n\nAttached is the partially processed file.\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
-    receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","khavyaasridhar@eoxvantage.in"]
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","khavyaasridhar@eoxvantage.in"]
     # receiver_email = ["shriharim@eoxvantage.com"]
     
     password = "cpct bmuw eprv veen"
@@ -59,7 +59,7 @@ def send_email_with_attachment(aname):
     subject = "Sagesure | Bulk Invoice Payment completion email"
     body = "************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
-    receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","khavyaasridhar@eoxvantage.in"]
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","khavyaasridhar@eoxvantage.in"]
     # receiver_email = ["shriharim@eoxvantage.com"]
     
     password = "cpct bmuw eprv veen"
@@ -107,7 +107,7 @@ def send_error_email(exp_desc):
     subject = "Sagesure | Bulk Invoice Payment Error Email"
     body = f"Files could not be picked up OR \nError while accessing S3 bucket. Please check the S3 Credentials and app.log.\n Exception: {exp_desc}\n\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
-    receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","stefanie.lintner@sagesure.com","suhass@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
     password = "cpct bmuw eprv veen"
     
     # Create a multipart message and set headers
@@ -131,7 +131,7 @@ def send_text_email(subj):
     subject = subj
     body = "Hi,\n\nPassword expired please reset and run the script again\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
-    receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
     password = "cpct bmuw eprv veen"
     #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
@@ -155,7 +155,7 @@ def send_text_email_error(subj, filename):
     subject = subj
     body = f"The process had stopped due to chrome crash or unkonwn issue. File not processed.\n\n Filename: {filename}\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
-    receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
     password = "cpct bmuw eprv veen"
     #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
@@ -179,7 +179,7 @@ def send_text_email_invalid(subj, exp_desc):
     subject = subj
     body = f"Hi,\n\nReceived an invalid file. Details are as below:\n{exp_desc}.\n\nPlease fix this and reshare the file\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
-    receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
     # receiver_email = ["shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
     password = "cpct bmuw eprv veen"
     #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
