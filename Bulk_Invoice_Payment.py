@@ -796,7 +796,7 @@ def call_process(file_path, credential, dated_filename):
                 # Save the entire rows (with all columns) of failed records to the error file
                 failed_records.to_excel(LOCAL_ERROR + "/" + str(dated_filename), index=False)
                 bulk_invoice_logger.info(f"Failed records saved to {LOCAL_ERROR + '/' + str(dated_filename)}")
-                send_email_with_attachment_error(LOCAL_PROCESSED + "/" + str(dated_filename))
+                send_email_with_attachment(LOCAL_PROCESSED + "/" + str(dated_filename))
             else:
                 bulk_invoice_logger.info(f"No failed records found.")
                 send_email_with_attachment(LOCAL_PROCESSED + "/" + str(dated_filename))
