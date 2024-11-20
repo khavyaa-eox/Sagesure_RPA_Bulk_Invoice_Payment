@@ -108,7 +108,7 @@ def send_error_email(exp_desc):
     body = f"Files could not be picked up OR \nError while accessing S3 bucket. Please check the S3 Credentials and app.log.\n Exception: {exp_desc}\n\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
     receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","stefanie.lintner@sagesure.com","suhass@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
-    password = "Welcome2eox"
+    password = "cpct bmuw eprv veen"
     
     # Create a multipart message and set headers
     message = MIMEMultipart()

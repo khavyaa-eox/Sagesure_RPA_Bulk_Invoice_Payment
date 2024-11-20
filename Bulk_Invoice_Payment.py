@@ -799,12 +799,12 @@ def call_process(file_path, credential, dated_filename):
                 send_email_with_attachment_error(LOCAL_PROCESSED + "/" + str(dated_filename))
             else:
                 bulk_invoice_logger.info(f"No failed records found.")
+                send_email_with_attachment(LOCAL_PROCESSED + "/" + str(dated_filename))
 
         except Exception as e:
             bulk_invoice_logger.error(f"Error reading or processing the file: {str(e)}")
 
         driver.quit()
-        send_email_with_attachment(LOCAL_PROCESSED + "/" + str(dated_filename))
         
         endTime = time.time()
         bulk_invoice_logger.info(f"Total Time: {endTime-startTime}")
