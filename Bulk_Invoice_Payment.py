@@ -28,9 +28,9 @@ from send_email import send_text_email
 from send_email import send_text_email_error
 from logger import bulk_invoice_logger, log_separator
 
-LOCAL_DOWNLOADS = config.local_download_path
-LOCAL_PROCESSED = config.local_completed_path
-LOCAL_ERROR = config.local_error_path
+LOCAL_DOWNLOADS = config.download_path
+LOCAL_PROCESSED = config.completed_path
+LOCAL_ERROR = config.error_path
 
 
 # Main file processing function
@@ -111,10 +111,9 @@ def call_process(file_path, credential, dated_filename):
         
         options = Options()
         options.add_experimental_option("excludeSwitches" , ["enable-automation"])
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
-        chrome_path = r"chromedriver.exe" #path from 'which chromedriver'
-        # chrome_path = ChromeDriverManager().install()
+
         driver = webdriver.Chrome(options=options)
         driver.maximize_window()
 
@@ -816,17 +815,19 @@ def call_process(file_path, credential, dated_filename):
         return dated_filename
 
 # =============================================================================
-    except:
+    except Exception as e:
         if filename1_flag:
+            data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False)
             send_email_with_attachment_error(LOCAL_PROCESSED + "/" + str(dated_filename))
-            bulk_invoice_logger.info("Run completed.")
+            bulk_invoice_logger.info(f"Run completed for file {dated_filename} with exception: {e}")
             log_separator(bulk_invoice_logger)
             return dated_filename
         elif filename1_flag == 0:
-            send_text_email_error("Sagesure | RPA | Chrome Crash", filename)
-            bulk_invoice_logger.info("Run completed.")
+            data.to_excel(LOCAL_PROCESSED+"/"+str(dated_filename),index=False)
+            send_text_email_error("Sagesure | RPA | Chrome Crash", dated_filename)
+            bulk_invoice_logger.info(f"Run completed for file {dated_filename} with exception: {e}")
             log_separator(bulk_invoice_logger)
-            return filename
+            return dated_filename
 # =============================================================================
     
 # call_process('/home/rpa-user/Sagesure_RPA_Bulk_Invoice_Payment/attachments/input_files/test.xlsx', {'user':'svc_claims_rpa+vendorbulkpay5@icg360.com', 'password':'1io$AU/XMz7NdV?5&kUN'})

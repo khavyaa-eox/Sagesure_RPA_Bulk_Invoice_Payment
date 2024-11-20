@@ -15,6 +15,7 @@ from requests.exceptions import RequestsDependencyWarning
 # Necessary Files
 import config
 from validation import validate_file
+from send_email import send_error_email
 from logger import listener_logger, log_separator
 from Bulk_Invoice_Payment import call_process
 
@@ -22,13 +23,11 @@ warnings.simplefilter('ignore', RequestsDependencyWarning)
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action="ignore", category=UserWarning)
 
-# Temporary directory for lock files
-temp_dir = tempfile.gettempdir()
+
+temp_dir = tempfile.gettempdir() # Temporary directory for lock files
 os.makedirs(temp_dir, exist_ok=True) # Ensure the temp_dir exists
 credential_lock = threading.Lock() # Lock for thread safety
-
-# Load environment variables from .env file
-load_dotenv()
+load_dotenv() # Load environment variables from .env file
 
 # S3 and RDC Connection and Folder details
 BUCKET_NAME = os.getenv("BUCKET_NAME")
@@ -45,7 +44,6 @@ MAX_FILES_IN_PROCESSING = 2  # Max simultaneous files to process
 file_queue = Queue()
 credentials_lock = threading.Lock()  # Lock to handle credential access
 USERS = config.credentials['worker_1'] # Users credentials for Snapsheet
-used_credentials = []  # List to track used credentials
 
 LOCAL_DOWNLOADS = config.download_path
 LOCAL_PROCESSED = config.completed_path
@@ -57,6 +55,7 @@ s3 = boto3.client(
     aws_access_key_id=ACCESS_KEY_ID,
     aws_secret_access_key=SECRET_ACCESS_KEY
 )
+
 
 # Function to monitor S3 for new files
 def monitor_files():
@@ -90,10 +89,12 @@ def monitor_files():
             # Start processing the valid files using threading
             process_files_with_threads()
 
-    except NoCredentialsError:
+    except NoCredentialsError as e:
         listener_logger.error("Credentials not available.")
+        send_error_email(e)
     except ClientError as e:
         listener_logger.error(f"An error occurred: {e}")
+        send_error_email(e)
 
 # Function to process files using multi-threading (max 2 at a time)
 def process_files_with_threads():

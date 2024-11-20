@@ -102,10 +102,10 @@ def send_email_with_attachment(aname):
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, text)
 
-def send_error_email():
+def send_error_email(exp_desc):
     listener_logger.info('sending error email')
-    subject = "Sagesure | Bulk Invoice Payment error email"
-    body = "No Emails to process OR \nError while downloadning the excel. Please check for attachment in email sent for processing.\n\n\n\n************* Sent from Automation ************"
+    subject = "Sagesure | Bulk Invoice Payment Error Email"
+    body = f"Files could not be picked up OR \nError while accessing S3 bucket. Please check the S3 Credentials and app.log.\n Exception: {exp_desc}\n\n\n\n************* Sent from Automation ************"
     sender_email = "automation@eoxvantage.com"
     receiver_email = ["kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","stefanie.lintner@sagesure.com","suhass@eoxvantage.com","pradeep@vantageagora.com","shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
     password = "Welcome2eox"
