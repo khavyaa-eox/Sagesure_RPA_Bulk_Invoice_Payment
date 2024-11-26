@@ -1,5 +1,5 @@
 import email, smtplib, ssl
-
+import os
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -28,7 +28,7 @@ def send_email_with_attachment_error(aname):
     message.attach(MIMEText(body, "plain"))
     
     attachmentName = aname  # In same directory as script
-    attachmentName1 = aname.replace('Output Files\\','')
+    attachmentName1 = os.path.basename(aname)
     # Open PDF file in binary mode
     with open(attachmentName, "rb") as attachment:
         # Add file as application/octet-stream
@@ -75,7 +75,7 @@ def send_email_with_attachment(aname):
     message.attach(MIMEText(body, "plain"))
     
     attachmentName = aname  # In same directory as script
-    attachmentName1 = aname.replace('Output Files\\','')
+    attachmentName1 = os.path.basename(aname)
     # Open PDF file in binary mode
     with open(attachmentName, "rb") as attachment:
         # Add file as application/octet-stream
