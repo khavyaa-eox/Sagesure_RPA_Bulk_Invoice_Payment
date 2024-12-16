@@ -431,29 +431,34 @@ def call_process(file_path, credential, dated_filename):
                     driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div/div[2]/div/table/thead/tr/td[4]/div/button').click()
                     webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
                     countwebpageText = 0
-                    while 'Primary Payee Type' not in webpageText and countwebpageText <= 15:
+                    while 'PAYMENT CONTACT INFORMATION' not in webpageText and countwebpageText <= 15:
                         time.sleep(1)
                         webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
                         countwebpageText += 1
+                        
                     
+                    # =============================================================================
+                    #                 #Add Payments First window
+                    # =============================================================================
+                    # Locate the element
+                    driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]').click()
+                    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]/div/input').send_keys(vendorNameExcel, Keys.ENTER)
+                    # driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[4]/div/div/label/div/div/div[1]/div[2]').click()
+                    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[4]/div/div/label/div/div/div[1]/div[2]/div/input').send_keys('Self Select', Keys.ENTER, Keys.TAB, Keys.TAB, Keys.TAB, str(invoiceNumber), Keys.ENTER)
+                    driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[5]/div[3]/div/div/label[1]/div').click()
                     
-                    #Primary Payee Type
-                    driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[2]/div/div[1]/label/div/div/div[1]/div[2]').click()
-                    driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[2]/div/div[1]/label/div/div/div[1]/div[2]/div/input').send_keys('Vendor',Keys.ENTER,Keys.TAB,vendorNameExcel,Keys.ENTER,Keys.TAB,'Self Select',Keys.ENTER)
-                    wait_for_ele_presence('//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[4]/div[3]/div/div/label[1]/div',20)
-                    driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[4]/div[3]/div/div/label[1]/div').click()
-                    driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[4]/div[2]/label/div/div/input').send_keys(str(invoiceNumber),Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB)
-                    driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[13]/div[3]/div[1]/div/div/label[2]/div').click()               
-                    driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[13]/div[4]/div[1]/div/div/label[1]/div').click()
-                    
-                    driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div/div[2]/div/div/div/div[4]/button[2]').click()
-                    
-                    
-                    countwebpageText5 = 0
-                    while 'Notification Only' in webpageText and countwebpageText5 <= 15:
-                        time.sleep(1)
-                        webpageText = driver.find_element(by=By.XPATH,value='/html/body').text
-                        countwebpageText5 += 1
+                    element1 = driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[10]/div[3]/div[1]/div/div/label[2]/div')
+                    driver.execute_script("arguments[0].scrollIntoView(true);", element1)
+
+                    element1.click()
+
+                    # Scroll the element into view
+                    element2 = driver.find_element(By.XPATH, '//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[10]/div[4]/div[1]/div/div/label[1]/div')
+                    driver.execute_script("arguments[0].scrollIntoView(true);", element2)
+
+                    # Now click on it
+                    element2.click()
+                    driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[4]/button[2]').click()
                     
                     # =============================================================================
                     #                 #Add Payments Second window
