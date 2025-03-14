@@ -101,8 +101,16 @@ def call_process(file_path, credential, dated_filename):
                 countclosedCheckText += 1
                 #print(countclosedCheckText,closedCheckText)
             time.sleep(1)
-            driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div[1]/div/div[1]/div[1]/div[3]/div/div/label/div/div').click()
-            driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[3]/div/div/label/div/div/div[1]/div[2]/div/input').send_keys(toChange,Keys.ENTER)
+            # Ensure dropdown is clickable and use focus
+            element = driver.find_element(By.XPATH, '//*[@id="claim-page-wrapper"]/div/div[1]/div/div[1]/div[1]/div[3]/div/div/label/div/div')
+           
+            # Use ActionChains to send keys directly to the element
+            action = ActionChains(driver)
+            action.move_to_element(element).click()  # Ensure element is focused
+            action.send_keys(Keys.ARROW_DOWN, Keys.ENTER).perform()  
+            # Send key strokes
+            # driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div[1]/div/div[1]/div[1]/div[3]/div/div/label/div/div').click()
+            # driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[3]/div/div/label/div/div/div[1]/div[2]/div/input').send_keys(toChange,Keys.ENTER)
             
         data = pd.read_excel(file_path)
         startTime = time.time()
@@ -111,7 +119,7 @@ def call_process(file_path, credential, dated_filename):
         
         options = Options()
         options.add_experimental_option("excludeSwitches" , ["enable-automation"])
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
 
         driver = webdriver.Chrome(options=options)
@@ -274,11 +282,17 @@ def call_process(file_path, credential, dated_filename):
                     exposureOpenCloseText = driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div[1]/div/div[1]/div[1]/div[1]/div[3]/div/label/div/div').text
                     
                     if exposureOpenCloseText == 'CLOSED':
-                        driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div[1]/div/div[1]/div[1]/div[1]/div[3]/div/label/div/div').click()
-                        driver.find_element(by=By.XPATH,value='/html/body/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[1]/div[3]/div/label/div/div[1]/div[1]/div[2]/div/input').send_keys('Open',Keys.ENTER)
+                        element_to_set_open = driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div[1]/div/div[1]/div[1]/div[1]/div[3]/div/label/div/div')
+                        # Use ActionChains to send keys directly to the element
+                        action = ActionChains(driver)
+                        action.move_to_element(element_to_set_open).click()  # Ensure element is focused
+                        action.send_keys(Keys.ARROW_DOWN, Keys.ENTER).perform() 
                         
                         check_for_webpage_text('Reopen Exposure')
-                        driver.find_element(by=By.XPATH,value='/html/body/div[3]/div[2]/div[3]/button[2]').click()
+                        element = driver.find_element(by=By.XPATH,value='/html/body/div[3]/div[2]/div[3]/button[2]')
+                        action = ActionChains(driver)
+                        action.move_to_element(element).click()  # Ensure element is focused
+                        action.send_keys(Keys.ARROW_DOWN, Keys.ENTER).perform()
                         countexposureOpenCloseText = 0
                         while exposureOpenCloseText != 'OPEN' and countexposureOpenCloseText <= 120:
                             time.sleep(0.5)
@@ -441,10 +455,30 @@ def call_process(file_path, credential, dated_filename):
                     #                 #Add Payments First window
                     # =============================================================================
                     # Locate the element
-                    driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]').click()
-                    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]/div/input').send_keys(vendorNameExcel, Keys.ENTER)
+                    # driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]').click()
+                    # driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]/div/input').send_keys(vendorNameExcel, Keys.ENTER)
+                    
+                    # contact_input_element = driver.find_element(By.XPATH, '//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]')
+                    # Create an ActionChains instance
+                    action = ActionChains(driver)
+
+                    contact_input_element = driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[2]/div/div/div/div/div/div[1]/div/div/div/label/div/div/div[1]/div[2]/div/input')
+
+                    # Perform the actions: click to open the dropdown, then send keys to the input field
+                    # action.move_to_element(contact_input_element).click().perform()  # Ensure element is focused and clicked
+                    action.move_to_element(contact_input_element).click().send_keys(vendorNameExcel.split()[0], Keys.ENTER).perform()
+                    
                     # driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[4]/div/div/label/div/div/div[1]/div[2]').click()
-                    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[4]/div/div/label/div/div/div[1]/div[2]/div/input').send_keys('Self Select', Keys.ENTER, Keys.TAB, Keys.TAB, Keys.TAB, str(invoiceNumber), Keys.ENTER)
+                    
+                    # Scroll to PAYMENT INFORMATION
+                    check_for_webpage_text("PAYMENT INFORMATION")
+
+                    element_to_view = driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]')
+                    driver.execute_script("arguments[0].scrollIntoView(true);", element_to_view)
+
+                    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[4]/div[1]/div[1]/label[1]/div[1]/div[1]/div[1]/div[2]').click()
+
+                    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[4]/div[1]/div[1]/label[1]/div[1]/div[1]/div[1]/div[2]/div/input').send_keys('Self Select', Keys.ENTER, Keys.TAB, Keys.TAB, Keys.TAB, str(invoiceNumber), Keys.ENTER)
                     driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[5]/div[3]/div/div/label[1]/div').click()
                     
                     element1 = driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[10]/div[3]/div[1]/div/div/label[2]/div')
@@ -458,12 +492,12 @@ def call_process(file_path, credential, dated_filename):
 
                     # Now click on it
                     element2.click()
-                    driver.find_element(by=By.XPATH, value='//*[@id="claim-page-wrapper"]/div/div/div/div[4]/button[2]').click()
+                    driver.find_element(by=By.XPATH, value='/html[1]/body[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[4]/button[2]/span[1]').click()
                     
                     # =============================================================================
                     #                 #Add Payments Second window
                     # =============================================================================
-                    driver.find_element(by=By.XPATH,value='//*[@id="claim-page-wrapper"]/div/div/div/div[3]/div/div/div[1]/button').click()
+                    driver.find_element(by=By.XPATH,value='/html[1]/body[1]/div[2]/div[1]/div[2]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/button[1]/div[1]/span[1]').click()
                     click_using_text(firstexposureText)
                     
                     countwebpageText6 = 0
