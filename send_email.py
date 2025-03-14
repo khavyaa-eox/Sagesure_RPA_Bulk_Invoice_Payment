@@ -7,19 +7,20 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE
 from logger import listener_logger
 
+import config
 
 def send_email_with_attachment_error(aname):
-    subject = "Sagesure | Partial | Bulk Invoice Payment completion email"
+    subject = f"[{config.target_worker}] Sagesure | Partial | Bulk Invoice Payment completion email"
     body = "The process had stopped due to chrome crash or unkonwn issue. Please check on priority.\n\nAttached is the partially processed file.\n\n\n************* Sent from Automation ************"
-    sender_email = "automation@eoxvantage.com"
+    sender_username = "apikey"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
     # receiver_email = ["shriharim@eoxvantage.com"]
     
-    password = "cpct bmuw eprv veen"
+    password = "rtyuio"
     
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = "automation@eoxvantage.com"
     message["To"] = COMMASPACE.join(receiver_email)
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
@@ -51,22 +52,22 @@ def send_email_with_attachment_error(aname):
     
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+    with smtplib.SMTP_SSL("smtp.sendgrid.net", 465, context=context) as server:
+        server.login(sender_username, password)
+        server.sendmail(sender_username, receiver_email, text)
 
 def send_email_with_attachment(aname):
-    subject = "Sagesure | Bulk Invoice Payment completion email"
+    subject = f"[{config.target_worker}] Sagesure | Bulk Invoice Payment completion email"
     body = "************* Sent from Automation ************"
-    sender_email = "automation@eoxvantage.com"
+    sender_username = "apikey"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
     # receiver_email = ["shriharim@eoxvantage.com"]
     
-    password = "cpct bmuw eprv veen"
+    password = "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"
     
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = "automation@eoxvantage.com"
     message["To"] = COMMASPACE.join(receiver_email)
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
@@ -98,21 +99,21 @@ def send_email_with_attachment(aname):
     
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+    with smtplib.SMTP_SSL("smtp.sendgrid.net", 465, context=context) as server:
+        server.login(sender_username, password)
+        server.sendmail(sender_username, receiver_email, text)
 
 def send_error_email(exp_desc):
     listener_logger.info('sending error email')
-    subject = "Sagesure | Bulk Invoice Payment Error Email"
+    subject = f"[{config.target_worker}] Sagesure | Bulk Invoice Payment Error Email"
     body = f"Files could not be picked up OR \nError while accessing S3 bucket. Please check the S3 Credentials and app.log.\n Exception: {exp_desc}\n\n\n\n************* Sent from Automation ************"
-    sender_email = "automation@eoxvantage.com"
-    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","khavyaa@eoxvantage.com"]
-    password = "cpct bmuw eprv veen"
+    sender_username = "apikey"
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
+    password = "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"
     
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = "automation@eoxvantage.com"
     message["To"] = COMMASPACE.join(receiver_email)
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
@@ -123,20 +124,20 @@ def send_error_email(exp_desc):
     
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+    with smtplib.SMTP_SSL("smtp.sendgrid.net", 465, context=context) as server:
+        server.login(sender_username, password)
+        server.sendmail(sender_username, receiver_email, text)
 
 def send_text_email(subj):
-    subject = subj
+    subject = f"[{config.target_worker}] " + subj
     body = "Hi,\n\nPassword expired please reset and run the script again\n\n\n************* Sent from Automation ************"
-    sender_email = "automation@eoxvantage.com"
-    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaa@eoxvantage.com"]
-    password = "cpct bmuw eprv veen"
-    #receiver_email = ["abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
+    sender_username = "apikey"
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
+    password = "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"
+    #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = "automation@eoxvantage.com"
     message["To"] = COMMASPACE.join(receiver_email)
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
@@ -147,20 +148,20 @@ def send_text_email(subj):
     
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+    with smtplib.SMTP_SSL("smtp.sendgrid.net", 465, context=context) as server:
+        server.login(sender_username, password)
+        server.sendmail(sender_username, receiver_email, text)
 
 def send_text_email_error(subj, filename):
-    subject = subj
+    subject = f"[{config.target_worker}] " + subj
     body = f"The process had stopped due to chrome crash or unkonwn issue. File not processed.\n\n Filename: {filename}\n\n\n************* Sent from Automation ************"
-    sender_email = "automation@eoxvantage.com"
-    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaa@eoxvantage.com"]
-    password = "cpct bmuw eprv veen"
-    #receiver_email = ["abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
+    sender_username = "apikey"
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
+    password = "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"
+    #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = "automation@eoxvantage.com"
     message["To"] = COMMASPACE.join(receiver_email)
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
@@ -171,21 +172,21 @@ def send_text_email_error(subj, filename):
     
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+    with smtplib.SMTP_SSL("smtp.sendgrid.net", 465, context=context) as server:
+        server.login(sender_username, password)
+        server.sendmail(sender_username, receiver_email, text)
 
 def send_text_email_invalid(subj, exp_desc):
-    subject = subj
+    subject = f"[{config.target_worker}] " + subj
     body = f"Hi,\n\nReceived an invalid file. Details are as below:\n{exp_desc}.\n\nPlease fix this and reshare the file\n\n\n************* Sent from Automation ************"
-    sender_email = "automation@eoxvantage.com"
-    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","abhishekgs@eoxvantage.com","khavyaa@eoxvantage.com"]
-    # receiver_email = ["khavyaa@eoxvantage.com"]
-    password = "cpct bmuw eprv veen"
-    #receiver_email = ["abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
+    sender_username = "apikey"
+    receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
+    # receiver_email = ["shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
+    password = "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"
+    #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = "automation@eoxvantage.com"
     message["To"] = COMMASPACE.join(receiver_email)
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
@@ -196,9 +197,9 @@ def send_text_email_invalid(subj, exp_desc):
     
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+    with smtplib.SMTP_SSL("smtp.sendgrid.net", 465, context=context) as server:
+        server.login(sender_username, password)
+        server.sendmail(sender_username, receiver_email, text)
         
 # aname = "Output Files\\test_completed.xlsx"ASCII
 # send_text_email_header("Sagesure | Column Issue","filename and missing heders")
