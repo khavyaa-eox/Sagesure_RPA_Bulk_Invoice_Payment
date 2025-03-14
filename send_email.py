@@ -12,7 +12,7 @@ import config
 def send_email_with_attachment_error(aname):
     subject = f"[{config.target_worker}] Sagesure | Partial | Bulk Invoice Payment completion email"
     body = "The process had stopped due to chrome crash or unkonwn issue. Please check on priority.\n\nAttached is the partially processed file.\n\n\n************* Sent from Automation ************"
-    sender_username = "apikey"
+    sender_username = "your_username"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
     # receiver_email = ["shriharim@eoxvantage.com"]
     
@@ -59,11 +59,11 @@ def send_email_with_attachment_error(aname):
 def send_email_with_attachment(aname):
     subject = f"[{config.target_worker}] Sagesure | Bulk Invoice Payment completion email"
     body = "************* Sent from Automation ************"
-    sender_username = "apikey"
+    sender_username = "your_username"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
     # receiver_email = ["shriharim@eoxvantage.com"]
     
-    password = "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"
+    password = "rtyuio"
     
     # Create a multipart message and set headers
     message = MIMEMultipart()
@@ -107,9 +107,9 @@ def send_error_email(exp_desc):
     listener_logger.info('sending error email')
     subject = f"[{config.target_worker}] Sagesure | Bulk Invoice Payment Error Email"
     body = f"Files could not be picked up OR \nError while accessing S3 bucket. Please check the S3 Credentials and app.log.\n Exception: {exp_desc}\n\n\n\n************* Sent from Automation ************"
-    sender_username = "apikey"
+    sender_username = "your_username"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
-    password = "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"
+    password = "rtyuio"
     
     # Create a multipart message and set headers
     message = MIMEMultipart()
@@ -131,9 +131,9 @@ def send_error_email(exp_desc):
 def send_text_email(subj):
     subject = f"[{config.target_worker}] " + subj
     body = "Hi,\n\nPassword expired please reset and run the script again\n\n\n************* Sent from Automation ************"
-    sender_username = "apikey"
+    sender_username = "your_username"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
-    password = "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"
+    password = "rtyuio"
     #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
     message = MIMEMultipart()
@@ -155,9 +155,9 @@ def send_text_email(subj):
 def send_text_email_error(subj, filename):
     subject = f"[{config.target_worker}] " + subj
     body = f"The process had stopped due to chrome crash or unkonwn issue. File not processed.\n\n Filename: {filename}\n\n\n************* Sent from Automation ************"
-    sender_username = "apikey"
+    sender_username = "your_username"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
-    password = "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"
+    password = "rtyuio"
     #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
     message = MIMEMultipart()
@@ -179,10 +179,10 @@ def send_text_email_error(subj, filename):
 def send_text_email_invalid(subj, exp_desc):
     subject = f"[{config.target_worker}] " + subj
     body = f"Hi,\n\nReceived an invalid file. Details are as below:\n{exp_desc}.\n\nPlease fix this and reshare the file\n\n\n************* Sent from Automation ************"
-    sender_username = "apikey"
+    sender_username = "your_username"
     receiver_email = ["enterpriseengineering@sagesure.com","donarose@eoxvantage.in","kristina.tomasetti@sagesure.com","claimsvendors@sagesure.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com","stefanie.lintner@sagesure.com","khavyaa@eoxvantage.com"]
     # receiver_email = ["shriharim@eoxvantage.com","khavyaasridhar@eoxvantage.in"]
-    password = "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"
+    password = "rtyuio"
     #receiver_email = ["shriharim@eoxvantage.com","abhishekgs@eoxvantage.com","pradeep@vantageagora.com"]
     # Create a multipart message and set headers
     message = MIMEMultipart()
